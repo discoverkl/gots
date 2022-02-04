@@ -7136,6 +7136,11 @@ ts-pnp@^1.1.6:
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
   integrity sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==
 
+ts2go@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ts2go/-/ts2go-1.0.0.tgz#f2bd10ef0dabfd65beda2448c317e9d42ced6a1c"
+  integrity sha512-GvdlVz9xmBufigBqVaxvXLoSx30ppLBV+7fL1eJmMiMPI2k/eue0cl8jQbSn2DA1AcEQeBUuud8CEfTyHdgxng==
+
 tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
@@ -7524,11 +7529,6 @@ vue-template-es2015-compiler@^1.9.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
-
-vue2go@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/vue2go/-/vue2go-1.0.6.tgz#7eeef08570dbf599139048b4dd11b4b1e5748d3a"
-  integrity sha512-ZlXw/PSKJtd87GYQkM6yVsRhyuBjyOYPrQzfMrB9PPDcUhohRkdO9D0nFL4WE63sDDlsvEuHc3v4RsbjiG+bNA==
 
 vue@^2.6.11:
   version "2.6.14"
