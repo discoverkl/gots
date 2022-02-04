@@ -1,4 +1,4 @@
-import { getapi, Base } from "vue2go";
+import { getapi, Base } from "ts2go";
 
 const dev = false || true;
 let api: API;
