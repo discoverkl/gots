@@ -1,0 +1,11 @@
+{
+  "name": "ts2go",
+  "version": "1.0.0",
+  "description": "Call remote go methods directly from typescript through WebSocket.",
+  "main": "ts2go.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "leokong",
+  "license": "ISC"
+}
