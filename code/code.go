@@ -26,6 +26,9 @@ type FileInfo struct {
 }
 
 func (a *API) ListDir(path string) ([]FileInfo, error) {
+	if path == "" {
+		path = "."
+	}
 	f, err := a.root.Open(path)
 	if err != nil {
 		return nil, err
