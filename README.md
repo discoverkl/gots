@@ -6,9 +6,7 @@ Call remote Go methods directly from TypeScript through WebSocket.
 
 Try yourself:
 ```shell
-cd `go env GOBIN`
-go install github.com/discoverkl/gots-examples/helloworld@latest
-./helloworld
+go run github.com/discoverkl/gots-examples/helloworld@v0.1.3
 ```
 
 Source code:
@@ -59,7 +57,6 @@ func promptRunMod() string {
 			}
 			log.Fatal(err)
 		}
-		log.Println("ch: ", ch)
 		switch ch {
 		case '1', 10:
 			return "app"
@@ -82,7 +79,6 @@ const promptText = `
 3: Online   - run a online web server
 
 Please enter (1-3)? `
-
 ```
 
 - [index.html](https://github.com/discoverkl/gots-examples/blob/main/helloworld/index.html)
@@ -95,18 +91,22 @@ Please enter (1-3)? `
     <body>
         <h1>Hello World!</h1>
 
-        1 + 3 = <span id="sum"></span>
+        <p style="font-size: 40px;" id="sum"></span>
 
         <!-- Step 1: export Gots to window object -->
         <script src="https://cdn.jsdelivr.net/npm/ts2go@1.0.0/ts2go.js"></script>
 
         <script>
+          function rand() {
+            return Math.floor(Math.random() * 100);
+          }
           async function main() {
             // Step 2: create a rpc client
             const api = await Gots.getapi()
 
             // Step 3: call remote go function: add
-            document.getElementById("sum").innerText = await api.add(1, 3)
+            let a = rand(), b = rand();
+            document.getElementById("sum").innerText = a + " + " + b + " = " + await api.add(a, b)
           }
           main()
         </script>
