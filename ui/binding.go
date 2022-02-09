@@ -106,7 +106,7 @@ func (m *mapBinding) Names() []string {
 	}
 	if m.binds != nil {
 		ret := []string{}
-		for name, _ := range m.binds {
+		for name := range m.binds {
 			ret = append(ret, name)
 		}
 		return ret

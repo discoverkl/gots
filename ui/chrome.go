@@ -24,12 +24,39 @@ type chromeConfig struct {
 }
 
 type chromePage struct {
+	Window
 	cmd        *exec.Cmd
 	chromeDone chan struct{}
 	conf       chromeConfig
 }
 
-func (c *chromePage) Open(url string) error {
+// func NewChromePage(root http.FileSystem) Window {
+// 	return NewChromeApp(root, 0, 0, -1, -1)
+// }
+
+func NewChromeApp(root http.FileSystem, x, y int, width, height int, chromeArgs ...string) Window {
+	conf := chromeConfig{x, y, width, height, chromeArgs}
+	c := &chromePage{
+		cmd:        nil,
+		chromeDone: make(chan struct{}),
+		conf:       conf,
+	}
+	c.Window = NewPage(root, c.OpenChrome)
+	return c
+}
+
+func NewChromeAppMapURL(root http.FileSystem, x, y int, width, height int, mapURL func(net.Listener) string, chromeArgs ...string) Window {
+	conf := chromeConfig{x, y, width, height, chromeArgs}
+	c := &chromePage{
+		cmd:        nil,
+		chromeDone: make(chan struct{}),
+		conf:       conf,
+	}
+	c.Window = NewPageMapURL(root, c.OpenChrome, mapURL)
+	return c
+}
+
+func (c *chromePage) OpenChrome(url string) error {
 	// ** native window
 	var err error
 	x, y, width, height := c.conf.x, c.conf.y, c.conf.width, c.conf.height
@@ -77,32 +104,9 @@ func (c *chromePage) Open(url string) error {
 	return err
 }
 
-func (c *chromePage) Close() {
+func (c *chromePage) Close() error {
 	c.ensureAppClosed()
-}
-
-func NewChromePage(root http.FileSystem) Window {
-	return NewApp(root, 0, 0, -1, -1)
-}
-
-func NewApp(root http.FileSystem, x, y int, width, height int, chromeArgs ...string) Window {
-	conf := chromeConfig{x, y, width, height, chromeArgs}
-	c := &chromePage{
-		cmd:        nil,
-		chromeDone: make(chan struct{}),
-		conf:       conf,
-	}
-	return NewNativeWindow(root, c, nil)
-}
-
-func NewAppMapURL(root http.FileSystem, x, y int, width, height int, mapURL func(net.Listener) string, chromeArgs ...string) Window {
-	conf := chromeConfig{x, y, width, height, chromeArgs}
-	c := &chromePage{
-		cmd:        nil,
-		chromeDone: make(chan struct{}),
-		conf:       conf,
-	}
-	return NewNativeWindow(root, c, mapURL)
+	return nil
 }
 
 func newChromeWithArgs(chromeBinary string, args ...string) (*exec.Cmd, error) {

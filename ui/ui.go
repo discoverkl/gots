@@ -101,21 +101,26 @@ func (u *ui) Run() error {
 
 	// ** create window or server
 	switch true {
-	case u.IsApp():
+	case u.IsChrome():
 		if c.AppChromeBinary != "" {
 			ChromeBinary = c.AppChromeBinary
 		}
 		if c.LocalMapURL == nil {
-			win = NewApp(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.AppChromeArgs...)
+			win = NewChromeApp(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.AppChromeArgs...)
 		} else {
-			win = NewAppMapURL(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.LocalMapURL, c.AppChromeArgs...)
+			win = NewChromeAppMapURL(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.LocalMapURL, c.AppChromeArgs...)
 		}
 		svr = win.Server()
-	case u.IsPage():
+	case u.IsApp(), u.IsPage():
+		if u.IsApp() {
+			c.OpenURL = func(url string) error {
+				return OpenWebApp(url, c.AppX, c.AppY, c.AppWidth, c.AppHeight)
+			}
+		}
 		if c.LocalMapURL == nil {
-			win = NewPage(c.Root)
+			win = NewPage(c.Root, c.OpenURL)
 		} else {
-			win = NewPageMapURL(c.Root, c.LocalMapURL)
+			win = NewPageMapURL(c.Root, c.OpenURL, c.LocalMapURL)
 		}
 		svr = win.Server()
 	case u.IsOnline():
@@ -213,6 +218,7 @@ func (u *ui) useRunMode() {
 	case "app":
 	case "page":
 	case "online":
+	case "chrome":
 	default:
 		if u.conf.OnlineAttach != nil {
 			mode = "online"
