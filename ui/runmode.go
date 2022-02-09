@@ -4,6 +4,7 @@ const (
 	modApp    = "app"
 	modPage   = "page"
 	modOnline = "online"
+	modChrome = "chrome"
 )
 
 type RunMode interface {
@@ -27,8 +28,12 @@ func (r runMode) IsOnline() bool {
 	return r == modOnline
 }
 
+func (r runMode) IsChrome() bool {
+	return r == modChrome
+}
+
 func (r runMode) IsLocal() bool {
-	return r.IsApp() || r.IsPage()
+	return r.IsApp() || r.IsPage() || r.IsChrome()
 }
 
 func (r runMode) Empty() bool {

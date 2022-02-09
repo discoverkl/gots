@@ -11,43 +11,41 @@ import (
 	"time"
 )
 
-type NativeWindow interface {
-	Open(url string) error
-	Close()
-}
-
-type browserNativeWindow struct{}
-
-func (*browserNativeWindow) Open(url string) error {
-	openBrowser(url)
-	return nil
-}
-
-func (*browserNativeWindow) Close() {}
-
 type browserPage struct {
 	server    *FileServer
 	closeOnce sync.Once
 	done      chan struct{}
-	win       NativeWindow
+	openURL   func(string) error
 	mapURL    func(net.Listener) string
 }
 
-func NewPage(root http.FileSystem) Window {
-	return NewNativeWindow(root, &browserNativeWindow{}, nil)
+func NewPage(root http.FileSystem, openURL func(string) error) Window {
+	return NewPageMapURL(root, openURL, nil)
 }
 
-func NewPageMapURL(root http.FileSystem, mapURL func(net.Listener) string) Window {
-	return NewNativeWindow(root, &browserNativeWindow{}, mapURL)
-}
-
-func NewNativeWindow(root http.FileSystem, win NativeWindow, mapURL func(net.Listener) string) Window {
+func NewPageMapURL(root http.FileSystem, openURL func(string) error, mapURL func(net.Listener) string) Window {
 	return &browserPage{
-		server: NewFileServer(root),
-		done:   make(chan struct{}),
-		win:    win,
-		mapURL: mapURL,
+		server:  NewFileServer(root),
+		done:    make(chan struct{}),
+		openURL: openURL,
+		mapURL:  mapURL,
 	}
+}
+
+func (c *browserPage) OpenURL(url string) error {
+	var err error
+	if c.openURL == nil {
+		// default to open system browser
+		err = OpenBrowser(url)
+		if err != nil {
+			err = fmt.Errorf("open url failed: %w", err)
+			log.Fatal(err)
+		}
+	} else {
+		err = c.openURL(url) // this call could block
+	}
+	<-c.server.Done()
+	return err
 }
 
 func (c *browserPage) Bind(b Bindings) error {
@@ -77,7 +75,7 @@ func (c *browserPage) Open() error {
 	}
 
 	// ** brower page
-	if err := c.win.Open(url); err != nil {
+	if err := c.OpenURL(url); err != nil {
 		return err
 	}
 
@@ -111,7 +109,7 @@ func (c *browserPage) Close() error {
 			log.Println("Window.server done")
 		}
 
-		c.win.Close()
+		c.Close()
 
 		// notify finally close
 		close(c.done)
@@ -119,7 +117,7 @@ func (c *browserPage) Close() error {
 	return nil
 }
 
-func openBrowser(url string) {
+func OpenBrowser(url string) error {
 	var err error
 
 	switch runtime.GOOS {
@@ -140,8 +138,5 @@ func openBrowser(url string) {
 	default:
 		err = fmt.Errorf("unsupported platform")
 	}
-	if err != nil {
-		err = fmt.Errorf("open url failed: %w", err)
-		log.Fatal(err)
-	}
+	return err
 }

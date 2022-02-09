@@ -19,6 +19,7 @@ type uiConfig struct {
 	Quiet           bool
 	BlurOnClose     bool
 	HistoryMode     bool
+	OpenURL         func(string) error
 	Root            http.FileSystem
 	AppX            int
 	AppY            int
@@ -58,7 +59,7 @@ func defaultUIConfig() *uiConfig {
 func Mode(mod string) Option {
 	return func(c *uiConfig) error {
 		switch mod {
-		case "", modApp, modPage, modOnline:
+		case "", modApp, modPage, modOnline, modChrome:
 			c.Mode = mod
 		default:
 			return fmt.Errorf("invalid run mode: %v", mod)
@@ -77,6 +78,15 @@ func Quiet() Option {
 func BlurOnClose(blur bool) Option {
 	return func(c *uiConfig) error {
 		c.BlurOnClose = blur
+		return nil
+	}
+}
+
+// OpenURL is a callback to enable custom frontend.
+// If not set, a browser will be opened.
+func OpenURL(fn func(string) error) Option {
+	return func(c *uiConfig) error {
+		c.OpenURL = fn
 		return nil
 	}
 }
