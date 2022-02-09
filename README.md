@@ -11,7 +11,7 @@ go run github.com/discoverkl/gots-examples/helloworld@v0.1.3
 
 Source code:
 
-- [main.go](https://github.com/discoverkl/gots-examples/blob/main/helloworld/main.go)
+- [main.go](https://github.com/discoverkl/gots-examples/blob/v0.1.3/helloworld/main.go)
 
 ```go
 package main
@@ -81,7 +81,7 @@ const promptText = `
 Please enter (1-3)? `
 ```
 
-- [index.html](https://github.com/discoverkl/gots-examples/blob/main/helloworld/index.html)
+- [index.html](https://github.com/discoverkl/gots-examples/blob/v0.1.3/helloworld/index.html)
 
 ```html
 <!DOCTYPE html>
