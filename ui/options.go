@@ -3,6 +3,7 @@ package ui
 import (
 	"bytes"
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
@@ -15,18 +16,18 @@ import (
 type Option func(*uiConfig) error
 
 type uiConfig struct {
-	Mode            string
-	Quiet           bool
-	BlurOnClose     bool
-	HistoryMode     bool
-	OpenURL         func(string) error
-	Root            http.FileSystem
-	AppX            int
-	AppY            int
-	AppWidth        int
-	AppHeight       int
-	AppChromeArgs   []string
-	AppChromeBinary string
+	Mode        string
+	Quiet       bool
+	BlurOnClose bool
+	HistoryMode bool
+	OpenURL     func(string) error
+	Root        fs.FS
+	AppX        int
+	AppY        int
+	AppWidth    int
+	AppHeight   int
+	// AppChromeArgs   []string
+	// AppChromeBinary string
 	OnlineAddr      string
 	OnlineListener  net.Listener
 	OnlinePrefix    string
@@ -102,7 +103,7 @@ func HistoryMode(enable bool) Option {
 	}
 }
 
-func Root(root http.FileSystem) Option {
+func Root(root fs.FS) Option {
 	return func(c *uiConfig) error {
 		c.Root = root
 		return nil
@@ -135,23 +136,23 @@ func AppWindow(x, y, width, height int) Option {
 	}
 }
 
-func AppFullScreen() Option {
-	return AppChromeArgs("--window-position=0,0", "--window-size=5000,5000", "--start-fullscreen")
-}
+// func AppFullScreen() Option {
+// 	return AppChromeArgs("--window-position=0,0", "--window-size=5000,5000", "--start-fullscreen")
+// }
 
-func AppChromeArgs(args ...string) Option {
-	return func(c *uiConfig) error {
-		c.AppChromeArgs = append(c.AppChromeArgs, args...)
-		return nil
-	}
-}
+// func AppChromeArgs(args ...string) Option {
+// 	return func(c *uiConfig) error {
+// 		c.AppChromeArgs = append(c.AppChromeArgs, args...)
+// 		return nil
+// 	}
+// }
 
-func AppChromeBinary(path string) Option {
-	return func(c *uiConfig) error {
-		c.AppChromeBinary = path
-		return nil
-	}
-}
+// func AppChromeBinary(path string) Option {
+// 	return func(c *uiConfig) error {
+// 		c.AppChromeBinary = path
+// 		return nil
+// 	}
+// }
 
 //
 // Page Mode Options
@@ -256,7 +257,7 @@ const defaultRoot = htmlRoot(`<!DOCTYPE html>
 
 type htmlRoot string
 
-func (r htmlRoot) Open(name string) (http.File, error) {
+func (r htmlRoot) Open(name string) (fs.File, error) {
 	return NewHtmlRoot(string(r)).Open(name)
 }
 
@@ -278,7 +279,7 @@ func NewSimpleRoot(files map[string]string) *simpleRoot {
 	}
 }
 
-func (r *simpleRoot) Open(name string) (http.File, error) {
+func (r *simpleRoot) Open(name string) (fs.File, error) {
 	r.once.Do(func() {
 		cache := make([]*stringFile, 0, len(r.files))
 		badNames := []string{}

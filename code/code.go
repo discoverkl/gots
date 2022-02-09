@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"io/ioutil"
-	"net/http"
 	"path/filepath"
 	"sort"
 
@@ -16,7 +15,7 @@ import (
 var root embed.FS
 
 type API struct {
-	root http.FileSystem
+	root fs.FS
 }
 
 type FileInfo struct {
@@ -40,7 +39,8 @@ func (a *API) ListDir(path string) ([]FileInfo, error) {
 	if !info.IsDir() {
 		return nil, fmt.Errorf("'%s' is not dir", path)
 	}
-	fis, err := f.Readdir(-1)
+	d, _ := f.(fs.ReadDirFile)
+	fis, err := d.ReadDir(-1)
 	if err != nil {
 		return nil, err
 	}
@@ -81,10 +81,10 @@ func (a *API) SaveText(path string, text string) error {
 	return fmt.Errorf("not supported")
 }
 
-func UI(codeRoot http.FileSystem, ops ...ui.Option) ui.UI {
+func UI(codeRoot fs.FS, ops ...ui.Option) ui.UI {
 	www, _ := fs.Sub(root, "fe/dist")
 	ops = append([]ui.Option{
-		ui.Root(http.FS(www)),
+		ui.Root(www),
 		ui.OnlinePort(8000),
 	}, ops...)
 

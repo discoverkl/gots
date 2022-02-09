@@ -102,13 +102,15 @@ func (u *ui) Run() error {
 	// ** create window or server
 	switch true {
 	case u.IsChrome():
-		if c.AppChromeBinary != "" {
-			ChromeBinary = c.AppChromeBinary
-		}
+		// if c.AppChromeBinary != "" {
+		// 	ChromeBinary = c.AppChromeBinary
+		// }
 		if c.LocalMapURL == nil {
-			win = NewChromeApp(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.AppChromeArgs...)
+			// win = NewChromeApp(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.AppChromeArgs...)
+			win = NewChromeApp(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight)
 		} else {
-			win = NewChromeAppMapURL(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.LocalMapURL, c.AppChromeArgs...)
+			// win = NewChromeAppMapURL(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.LocalMapURL, c.AppChromeArgs...)
+			win = NewChromeAppMapURL(c.Root, c.AppX, c.AppY, c.AppWidth, c.AppHeight, c.LocalMapURL)
 		}
 		svr = win.Server()
 	case u.IsApp(), u.IsPage():
@@ -251,9 +253,9 @@ func (u *ui) useSpecialEnvSetting() {
 	// 	}
 	// }
 
-	// chrome binary
-	chromePathEnv := os.Getenv("APP_CHROME_BINARY")
-	if chromePathEnv != "" {
-		u.conf.AppChromeBinary = chromePathEnv
-	}
+	// // chrome binary
+	// chromePathEnv := os.Getenv("APP_CHROME_BINARY")
+	// if chromePathEnv != "" {
+	// 	u.conf.AppChromeBinary = chromePathEnv
+	// }
 }

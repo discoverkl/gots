@@ -3,6 +3,7 @@ package ui
 import (
 	"context"
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
 	"net/http"
@@ -54,7 +55,7 @@ type FileServer struct {
 	HistoryMode   bool
 	ClientOptions *ClientOptions
 
-	root http.FileSystem // optional for default instance
+	root fs.FS // optional for default instance
 
 	server   *http.Server
 	serveMux *http.ServeMux
@@ -76,7 +77,7 @@ type muxEntry struct {
 	pattern string
 }
 
-func NewFileServer(root http.FileSystem) *FileServer {
+func NewFileServer(root fs.FS) *FileServer {
 	serveMux := http.NewServeMux()
 	s := &FileServer{
 		root:                 root,
@@ -130,19 +131,19 @@ func (s *FileServer) ListenAndServeTLS(certFile, keyFile string) error {
 	return s.server.ListenAndServeTLS(certFile, keyFile)
 }
 
-func (s *FileServer) handlePage(path string, root http.FileSystem) {
+func (s *FileServer) handlePage(path string, root fs.FS) {
 	path = strings.Join([]string{s.getPrefix(), path}, "/")
 	path = strings.TrimRight(path, "/")
 	// s.serveMux.Handle(path+"/", http.StripPrefix(path, http.FileServer(root)))
-	handler := http.FileServer(root)
+	handler := http.FileServer(http.FS(root))
 	if s.HistoryMode {
 		handler = s.historyModeFileServer(root)
 	}
 	s.es = append(s.es, muxEntry{pattern: path + "/", h: http.StripPrefix(path, handler)})
 }
 
-func (s *FileServer) historyModeFileServer(root http.FileSystem) http.Handler {
-	fileServer := http.FileServer(root)
+func (s *FileServer) historyModeFileServer(root fs.FS) http.Handler {
+	fileServer := http.FileServer(http.FS(root))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		upath := r.URL.Path
 		if !strings.HasPrefix(upath, "/") {

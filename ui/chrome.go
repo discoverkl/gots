@@ -2,9 +2,9 @@ package ui
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -30,11 +30,7 @@ type chromePage struct {
 	conf       chromeConfig
 }
 
-// func NewChromePage(root http.FileSystem) Window {
-// 	return NewChromeApp(root, 0, 0, -1, -1)
-// }
-
-func NewChromeApp(root http.FileSystem, x, y int, width, height int, chromeArgs ...string) Window {
+func NewChromeApp(root fs.FS, x, y int, width, height int, chromeArgs ...string) Window {
 	conf := chromeConfig{x, y, width, height, chromeArgs}
 	c := &chromePage{
 		cmd:        nil,
@@ -45,7 +41,7 @@ func NewChromeApp(root http.FileSystem, x, y int, width, height int, chromeArgs 
 	return c
 }
 
-func NewChromeAppMapURL(root http.FileSystem, x, y int, width, height int, mapURL func(net.Listener) string, chromeArgs ...string) Window {
+func NewChromeAppMapURL(root fs.FS, x, y int, width, height int, mapURL func(net.Listener) string, chromeArgs ...string) Window {
 	conf := chromeConfig{x, y, width, height, chromeArgs}
 	c := &chromePage{
 		cmd:        nil,
