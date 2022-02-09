@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
+	"io/fs"
 	"log"
-	"net/http"
+	"os"
 
 	"github.com/discoverkl/gots"
 	"github.com/discoverkl/gots/code"
@@ -19,11 +20,11 @@ func main() {
 		path = flag.Arg(0)
 	}
 
-	var www http.FileSystem
+	var www fs.FS
 	if path == "" {
-		www = http.FS(gots.Source)
+		www = gots.Source
 	} else {
-		www = http.Dir(path)
+		www = os.DirFS(path)
 	}
 	app := code.UI(www, ui.Mode("app"))
 

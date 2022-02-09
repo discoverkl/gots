@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"log"
-	"net/http"
+	"os"
 	"time"
 
 	"github.com/discoverkl/gots/ui"
@@ -43,7 +43,7 @@ func (c *Counter) Add() int {
 
 func main() {
 	app := ui.New(
-		ui.Root(http.Dir("fe/dist")),
+		ui.Root(os.DirFS("fe/dist")),
 		ui.OnlinePort(8000),
 		ui.BlurOnClose(true),
 		ui.HistoryMode(true),

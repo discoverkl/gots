@@ -2,9 +2,10 @@ package ui
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"net"
-	"net/http"
+	"net/url"
 	"os/exec"
 	"runtime"
 	"sync"
@@ -19,11 +20,11 @@ type browserPage struct {
 	mapURL    func(net.Listener) string
 }
 
-func NewPage(root http.FileSystem, openURL func(string) error) Window {
+func NewPage(root fs.FS, openURL func(string) error) Window {
 	return NewPageMapURL(root, openURL, nil)
 }
 
-func NewPageMapURL(root http.FileSystem, openURL func(string) error, mapURL func(net.Listener) string) Window {
+func NewPageMapURL(root fs.FS, openURL func(string) error, mapURL func(net.Listener) string) Window {
 	return &browserPage{
 		server:  NewFileServer(root),
 		done:    make(chan struct{}),
@@ -117,9 +118,12 @@ func (c *browserPage) Close() error {
 	return nil
 }
 
-func OpenBrowser(url string) error {
-	var err error
-
+func OpenBrowser(pageURL string) error {
+	link, err := url.Parse(pageURL)
+	if err != nil {
+		return err
+	}
+	url := link.String()
 	switch runtime.GOOS {
 	case "linux":
 		err = exec.Command("xdg-open", url).Start()
