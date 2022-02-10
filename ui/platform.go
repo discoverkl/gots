@@ -1,3 +1,5 @@
+//go:build webview || windows || darwin
+
 package ui
 
 import (

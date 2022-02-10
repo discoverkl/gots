@@ -38,12 +38,12 @@ func (c *browserPage) OpenURL(url string) error {
 	if c.openURL == nil {
 		// default to open system browser
 		err = OpenBrowser(url)
-		if err != nil {
-			err = fmt.Errorf("open url failed: %w", err)
-			log.Fatal(err)
-		}
 	} else {
 		err = c.openURL(url) // this call could block
+	}
+	if err != nil {
+		err = fmt.Errorf("open url failed: %w", err)
+		log.Fatal(err)
 	}
 	<-c.server.Done()
 	return err
