@@ -6,12 +6,12 @@ Call remote Go methods directly from TypeScript through WebSocket.
 
 Try yourself:
 ```shell
-go run github.com/discoverkl/gots-examples/helloworld@v0.1.4
+go run github.com/discoverkl/gots-examples/helloworld@v0.1.5
 ```
 
 Source code:
 
-- [main.go](https://github.com/discoverkl/gots-examples/blob/v0.1.4/helloworld/main.go)
+- [main.go](https://github.com/discoverkl/gots-examples/blob/v0.1.5/helloworld/main.go)
 
 ```go
 package main
@@ -80,7 +80,7 @@ const promptText = `
 Please enter (1-3)? `
 ```
 
-- [index.html](https://github.com/discoverkl/gots-examples/blob/v0.1.4/helloworld/index.html)
+- [index.html](https://github.com/discoverkl/gots-examples/blob/v0.1.5/helloworld/index.html)
 
 ```html
 <!DOCTYPE html>
