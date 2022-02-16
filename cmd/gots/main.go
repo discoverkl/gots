@@ -4,7 +4,6 @@ import (
 	"flag"
 	"io/fs"
 	"log"
-	"os"
 
 	"github.com/discoverkl/gots"
 	"github.com/discoverkl/gots/code"
@@ -21,10 +20,15 @@ func main() {
 	}
 
 	var www fs.FS
+	var err error
 	if path == "" {
 		www = gots.Source
 	} else {
-		www = os.DirFS(path)
+		// www = os.DirFS(path)
+		www, err = code.NewLocalFS(path)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	app := code.UI(www, ui.Mode("app"))
 
