@@ -1,1 +1,0 @@
-find fe/dist -name "*.map" | xargs rm -f
