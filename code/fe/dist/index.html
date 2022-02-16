@@ -1,4 +1,26 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="favicon.ico"><title>fe</title><link href="css/app.7fa00962.css" rel="preload" as="style"><link href="css/chunk-vendors.18eb5ab4.css" rel="preload" as="style"><link href="js/app.3af17be3.js" rel="preload" as="script"><link href="js/chunk-vendors.dfbbf800.js" rel="preload" as="script"><link href="css/chunk-vendors.18eb5ab4.css" rel="stylesheet"><link href="css/app.7fa00962.css" rel="stylesheet"></head><body style="overflow:hidden;"><noscript><strong>We're sorry but fe doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div><script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0/min/vs/loader.js"></script><script>(function() {
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico"> -->
+    <link rel="icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Go and TypeScript</title>
+    <script type="module" crossorigin src="/assets/index.98062568.js"></script>
+    <link rel="modulepreload" href="/assets/vendor.18e0a19c.js">
+    <link rel="stylesheet" href="/assets/index.14fb0adb.css">
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but this app doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app" style="height: 100%;"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0/min/vs/loader.js"></script>
+    <script>
+      (function() {
         require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0/min/vs' }});
 
         let monacoResolve;
@@ -11,4 +33,10 @@
         });
 
         window.getmonaco = () => monacoReady
-      })()</script><script src="js/chunk-vendors.dfbbf800.js"></script><script src="js/app.3af17be3.js"></script></body></html>
+      })()
+    </script>
+
+    <!-- built files will be auto injected -->
+  </body>
+
+</html>
