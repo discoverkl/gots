@@ -8,123 +8,127 @@
       @mousedown="itemClick"
     >
       <span class="item-content">
-        <VueIcon
-          :class="{ icon: true, show: true, file: !isDir }"
+        <!-- <VueIcon
+          :class="{ icon: true, show: true, file: !state.isDir }"
           :icon="iconOfItem"
-        />
-        <span class="title">{{ item.name }}</span></span
-      >
+        /> -->
+        <span :class="{ icon: true, show: true, file: !state.isDir }" class="material-icons">{{ iconOfItem }}</span>
+        <span class="title">{{ item.name }}</span>
+      </span>
     </div>
-    <ul v-show="isOpen" v-if="isDir">
-      <tree-item
+    <ul v-show="state.isOpen" v-if="state.isDir">
+      <TreeItem
         class="item"
         v-for="(child, index) in item.children"
-        :key="version.toString() + '-' + index"
+        :key="state.version.toString() + '-' + index"
         :item="child"
         :context="context"
-      ></tree-item>
+      ></TreeItem>
     </ul>
   </li>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import {
-  ref,
-  reactive,
-  toRefs,
-  computed,
-  onMounted
-} from "@vue/composition-api";
+<script setup lang="ts">
+import { ref, reactive, computed, onMounted} from "vue";
 import api from "../api";
-import { Notify, File } from "./Code.vue";
+// import { Notify, File } from "./Code.vue";
 
-export default {
-  name: "tree-item",
-  props: {
-    item: Object,
-    context: Object,
-    root: Boolean
-  },
-  setup(props, { emit }) {
-    const state = reactive({
-      isOpen: false,
-      isDir: computed(() => props.item.isDir),
-      version: 0
-    });
+export interface Notify {
+  info: (title: string, msg: string) => void;
+  success: (title: string, msg: string) => void;
+  error: (title: string, msg: string) => void;
+}
 
-    const notify = computed(() => props.context.notify as Notify);
+export interface File {
+  name: string;
+  path: string;
+  children: File[];
+  isDir: boolean;
+  parent: File;
+}
 
-    if (props.root === true) {
-      props.context.emit = emit;
+const props = defineProps({
+  item: Object,
+  context: Object,
+  root: Boolean
+})
+
+const emit = defineEmits(["hook:open", "tree:click", "file:open"])
+
+// const name = "tree-item"
+
+const state = reactive({
+  isOpen: false,
+  isDir: computed(() => props.item.isDir),
+  version: 0
+});
+
+const notify = computed(() => props.context.notify as Notify);
+
+if (props.root === true) {
+  props.context.emit = emit;
+}
+
+onMounted(async function() {
+  // auto open hook
+  if (state.isDir) {
+    await props.context.ready;
+    const ret = ref(false);
+    props.context.emit("hook:open", props.item.path, ret);
+    if (ret.value === true && !state.isOpen) {
+      toggle();
     }
-
-    onMounted(async function() {
-      // auto open hook
-      if (state.isDir) {
-        await props.context.ready;
-        const ret = ref(false);
-        props.context.emit("hook:open", props.item.path, ret);
-        if (ret.value === true && !state.isOpen) {
-          toggle();
-        }
-      }
-    });
-
-    async function itemClick(e) {
-      if (props.item.isDir) e.preventDefault();
-      props.context.emit("tree:click");
-      props.context.selectPath = props.item.path;
-      await toggle();
-      if (!props.item.isDir) {
-        props.context.emit("file:open", props.item.path);
-      }
-    }
-
-    async function toggle() {
-      if (state.isDir) {
-        if (!state.isOpen) {
-          if (!api) {
-            notify.value.error("Open Dir Failed", "API is not ready");
-            return;
-          }
-
-          try {
-            state.version++;
-            const files = (await api.listDir(props.item.path)) as File[];
-            const items = [];
-            for (const file of files) {
-              if (file.name.length > 0 && file.name[0] === ".") continue;
-              file.parent = props.item;
-              items.push(file);
-            }
-            Vue.set(props.item, "children", items);
-          } catch (ex) {
-            Vue.set(props.item, "children", null);
-            notify.value.error("Open Dir Failed", ex);
-          }
-        }
-
-        state.isOpen = !state.isOpen;
-      }
-    }
-
-    const iconOfItem = computed(() => {
-      return state.isDir
-        ? state.isOpen
-          ? "keyboard_arrow_down"
-          : "keyboard_arrow_right"
-        : "insert_drive_file";
-    });
-
-    return {
-      ...toRefs(state),
-      toggle,
-      iconOfItem,
-      itemClick
-    };
   }
-};
+});
+
+async function itemClick(e) {
+  if (props.item.isDir) e.preventDefault();
+  props.context.emit("tree:click");
+  props.context.selectPath = props.item.path;
+  await toggle();
+  if (!props.item.isDir) {
+    props.context.emit("file:open", props.item.path);
+  }
+}
+
+async function toggle() {
+  if (state.isDir) {
+    if (!state.isOpen) {
+      if (!api) {
+        notify.value.error("Open Dir Failed", "API is not ready");
+        return;
+      }
+
+      try {
+        state.version++;
+        const files = (await api.listDir(props.item.path)) as File[];
+        const items = [];
+        for (const file of files) {
+          if (file.name.length > 0 && file.name[0] === ".") continue;
+          file.parent = props.item as any;
+          items.push(file);
+        }
+        // Vue.set(props.item, "children", items);
+        props.item["children"] = items
+      } catch (ex) {
+        // Vue.set(props.item, "children", null);
+        props.item["children"] = null
+        notify.value.error("Open Dir Failed", ex);
+      }
+    }
+
+    state.isOpen = !state.isOpen;
+  }
+}
+
+const iconOfItem = computed(() => {
+  return state.isDir
+    ? state.isOpen
+      ? "expand_more"
+      : "chevron_right"
+    : "description";
+});
+
 </script>
 
 <style scoped>
@@ -139,10 +143,10 @@ ul {
 }
 
 .item .icon {
-  width: 25px;
-  height: 25px;
+  font-size: 18px;
   visibility: hidden;
   display: inline-block;
+  vertical-align: middle;
 }
 
 .item .icon.show {
@@ -155,11 +159,9 @@ ul {
 }
 
 .item .icon.file {
-  width: 15px;
-  height: 25px;
-  padding-left: 5px;
-  padding-right: 5px;
-  /* opacity: 0.8; */
+  font-size: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 .item .back {
