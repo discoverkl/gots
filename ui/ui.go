@@ -65,6 +65,9 @@ func (u *ui) BindFunc(name string, fn interface{}) {
 	u.Bind(Func(name, fn))
 }
 
+// BindObject binds public properties and methods.
+// Property will be wrapped in a get method with same name.
+// Method will be renamed to camelCase.
 func (u *ui) BindObject(obj interface{}) {
 	u.Bind(Object(obj))
 }

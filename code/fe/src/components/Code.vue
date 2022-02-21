@@ -285,20 +285,20 @@ ul {
   padding-left: 0;
 }
 .tree {
-  flex: 0 0 auto;
-  min-width: 180px;
-  max-width: 500px;
-  width: 20%;
+  flex: 1;
+  width: 160px;
+  min-width: 100px;
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
   border-right-width: 1px;
   border-right-style: solid;
   border-right-color: lightgray;
 }
 .file {
-  flex: 1 1 auto;
-  width: 100%;
-  height: 100%;
+  flex: 4;
+  /* width: 100%;
+  height: 100%; */
+  width: 800px;
   position: relative;
 }
 .input {
