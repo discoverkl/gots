@@ -43,7 +43,7 @@ type uiConfig struct {
 func defaultUIConfig() *uiConfig {
 	return &uiConfig{
 		Root:        defaultRoot,
-		BlurOnClose: true,
+		BlurOnClose: false,
 		AppX:        200,
 		AppY:        200,
 		AppWidth:    1024,
