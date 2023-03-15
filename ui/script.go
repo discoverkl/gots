@@ -200,8 +200,10 @@ var script = `var __awaiter = (this && this.__awaiter) || function (thisArg, _ar
         }
         attach() {
             let ws = this.ws;
+            let root = this.root;
             ws.onmessage = this.onmessage.bind(this);
             ws.onopen = e => {
+                root.__active__ = true
                 if (options.blurOnClose)
                     window.document.body.style.opacity = 1;
             };
@@ -209,6 +211,7 @@ var script = `var __awaiter = (this && this.__awaiter) || function (thisArg, _ar
                 console.log("ws error at", new Date().toLocaleString(), e);
             };
             ws.onclose = e => {
+                root.__active__ = false
                 if (options.blurOnClose)
                     window.document.body.style.opacity = 0.382;
                 console.log("ws close at", new Date().toLocaleString(), e);
