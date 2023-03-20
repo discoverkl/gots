@@ -74,10 +74,8 @@ func (p *jsClient) readLoop(ctx context.Context) {
 
 	// connection closer
 	go func() {
-		select {
-		case <-ctx.Done():
-			p.ws.Close()
-		}
+		<-ctx.Done()
+		p.ws.Close()
 	}()
 
 	for {
@@ -92,7 +90,9 @@ func (p *jsClient) readLoop(ctx context.Context) {
 				return
 			}
 			log.Println("receive bad message:", err)
-			continue
+			p.ws.Close()
+			break
+			// continue
 		}
 		if dev {
 			log.Printf("[receive] %s, param: %v", m.Method, string(m.Params))
