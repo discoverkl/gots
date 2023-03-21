@@ -201,6 +201,7 @@ var script = `var __awaiter = (this && this.__awaiter) || function (thisArg, _ar
         attach() {
             let ws = this.ws;
             let root = this.root;
+            root.__active__ = true
             ws.onmessage = this.onmessage.bind(this);
             ws.onopen = e => {
                 root.__active__ = true
