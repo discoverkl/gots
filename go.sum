@@ -1,5 +1,5 @@
-github.com/webview/webview v0.0.0-20220209020913-f90053554510 h1:AUOdBO3RlXuVPs2KWXhk2LGM+VOFz1yO6++YWGgoUFQ=
-github.com/webview/webview v0.0.0-20220209020913-f90053554510/go.mod h1:rpXAuuHgyEJb6kXcXldlkOjU6y4x+YcASKKXJNUhh0Y=
+github.com/webview/webview v0.0.0-20200121135717-9c1b0a888aa4 h1:W38WUJBMDzUvRtx8XXWa/kqQUSFnJ9/6LbFvy5P6ERk=
+github.com/webview/webview v0.0.0-20200121135717-9c1b0a888aa4/go.mod h1:Zk81X+8/mp/MNoeJXXK4Noydn8pcea09e00dFfAwrxg=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa h1:F+8P+gmewFQYRk6JoLQLwjBCTu3mcIURZfNkVweuRKA=
 golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
